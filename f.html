@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Download Manager</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            text-align: center;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #downloadsList {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .download-item {
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+
+        .download-item .status {
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        .progress-bar {
+            height: 20px;
+            width: 0;
+            background-color: #4CAF50;
+            border-radius: 4px;
+            text-align: center;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>File Download Manager</h1>
+        <input type="text" id="fileUrl" placeholder="Enter File URL" />
+        <input type="text" id="destination" placeholder="Enter Destination Filename" />
+        <button id="addDownload">Add to Queue</button>
+        <button id="startDownload">Start Downloads</button>
+        <div id="downloadsList">
+            <!-- Download tasks will be displayed here -->
+        </div>
+    </div>
+
+    <script>
+        // Simulating a download function with progress bar
+        let downloadQueue = [];
+
+        // Add a new download task to the queue
+        document.getElementById("addDownload").addEventListener("click", function () {
+            const fileUrl = document.getElementById("fileUrl").value;
+            const destination = document.getElementById("destination").value;
+
+            if (fileUrl && destination) {
+                const downloadTask = {
+                    fileUrl,
+                    destination,
+                    fileSize: 5000, // This can be dynamically calculated from the server
+                };
+                downloadQueue.push(downloadTask);
+                const downloadDiv = document.createElement("div");
+                downloadDiv.classList.add("download-item");
+                downloadDiv.innerHTML = `<strong>${destination}</strong>
+                                         <div class="status">Queued...</div>
+                                         <div class="progress-bar-container">
+                                            <div class="progress-bar"></div>
+                                         </div>`;
+                document.getElementById("downloadsList").appendChild(downloadDiv);
+                alert("Download Added to Queue!");
+            } else {
+                alert("Please provide both URL and destination.");
+            }
+        });
+
+        // Start downloading files
+        document.getElementById("startDownload").addEventListener("click", function () {
+            if (downloadQueue.length === 0) {
+                alert("No downloads in the queue.");
+                return;
+            }
+
+            const downloadDivs = document.querySelectorAll(".download-item");
+            downloadDivs.forEach((downloadDiv, index) => {
+                const progressBar = downloadDiv.querySelector(".progress-bar");
+                const status = downloadDiv.querySelector(".status");
+
+                // Simulate download with progress update
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += Math.random() * 10 + 5;  // Increment progress
+                    progress = Math.min(progress, 100);  // Ensure progress does not exceed 100%
+                    progressBar.style.width = progress + "%";
+
+                    if (progress >= 100) {
+                        status.innerText = "Download Complete!";
+                        clearInterval(interval);
+                    }
+                }, 500);
+            });
+        });
+    </script>
+</body>
+</html>
